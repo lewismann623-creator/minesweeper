@@ -1669,7 +1669,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	const cell_container = document.getElementsByClassName('cell-container')[0];
 	cell_container.addEventListener('mouseover', function(event) {
 		if(winmine.game_over) { return; }
-		if(winmine.mouse_is_down && winmine.mouse2_is_down) {
+		if(winmine.multi_cell) {
 			const coords = winmine.id_as_y_x(event.target.id);
 			const neighboring_cells = winmine.get_array_of_neighbor_ids(coords[0], coords[1]);
 			document.querySelectorAll('#cell_' + neighboring_cells.join(':not(.flag):not(.clear),#cell_') + ':not(.flag):not(.clear)').forEach(function (element) {
@@ -1687,7 +1687,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	});
 	cell_container.addEventListener('mouseout', function(event) {
 		if(winmine.game_over) { return; }
-		if(winmine.mouse_is_down && winmine.mouse2_is_down) {
+		if(winmine.multi_cell) {
 			const coords = winmine.id_as_y_x(event.target.id);
 			const neighboring_cells = winmine.get_array_of_neighbor_ids(coords[0], coords[1]);
 			document.querySelectorAll('#cell_' + neighboring_cells.join(',#cell_')).forEach(function (element) {
@@ -1702,7 +1702,8 @@ document.addEventListener('DOMContentLoaded', function() {
 		if(winmine.game_over) { return; }
 		if(event.button === 0 || event.detail.button0) { winmine.mouse_is_down = true; }
 		if(event.button === 2 || event.detail.button2) { winmine.mouse2_is_down = true; }
-		if(winmine.mouse_is_down && winmine.mouse2_is_down) {
+		/* chording: trigger on the classic left+right combo, OR on a lone right-click over an already-revealed (numbered) cell */
+		if((winmine.mouse_is_down && winmine.mouse2_is_down) || (winmine.mouse2_is_down && event.target.classList.contains('clear'))) {
 			const coords = winmine.id_as_y_x(event.target.id);
 			const neighboring_cells = winmine.get_array_of_neighbor_ids(coords[0], coords[1]);
 			document.querySelectorAll('#cell_' + neighboring_cells.join(':not(.flag):not(.clear),#cell_') + ':not(.flag):not(.clear)').forEach(function (element) {
